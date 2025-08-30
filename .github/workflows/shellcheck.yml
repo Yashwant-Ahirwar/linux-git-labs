@@ -14,8 +14,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          shopt -s globstar nullglob
-          files=(**/*.sh)
+          # Find all *.sh files robustly (no globstar needed)
+          mapfile -d '' files < <(find . -type f -name '*.sh' -print0)
           if [ ${#files[@]} -eq 0 ]; then
             echo "No shell scripts to lint."
             exit 0
