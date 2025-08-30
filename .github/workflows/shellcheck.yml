@@ -6,7 +6,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install ShellCheck
         run: sudo apt-get update && sudo apt-get install -y shellcheck
+
       - name: Run ShellCheck
-        run: shellcheck **/*.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s globstar nullglob
+          files=(**/*.sh)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No shell scripts to lint."
+            exit 0
+          fi
+          shellcheck "${files[@]}"
